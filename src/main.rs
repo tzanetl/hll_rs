@@ -42,12 +42,18 @@ mod helpers {
 
     use hash32::Hasher;
 
-    /// Return a 32 bit hash of the `value`
+    /// Return a 32 bit hash of a `value`
     pub fn hash_value_32<T: Hash>(value: &T) -> u32 {
         let mut hasher = hash32::Murmur3Hasher::default();
         value.hash(&mut hasher);
         let hash: u32 = hasher.finish32();
         return hash;
+    }
+
+    /// Return `n` big endian (most significant) bits of a `value`
+    pub fn n_be_bits(value: u32, n: u32) -> u32 {
+        let shift_amount = 32 - n;
+        value >> shift_amount
     }
 }
 
