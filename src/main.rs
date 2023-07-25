@@ -7,6 +7,13 @@ struct HyperLogLog {
     index_bits: u8
 }
 
+impl Default for HyperLogLog {
+    /// Creates a HyperLogLog with 4 bits as `index_bits`
+    fn default() -> Self {
+        Self::new(3).unwrap()
+    }
+}
+
 impl HyperLogLog {
     /// Create a new HyperLogLog(HLL) set with first `index_bits` used as register indexes
     fn new(index_bits: u8) -> Result<Self, String> {
