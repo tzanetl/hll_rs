@@ -17,8 +17,12 @@ impl Default for HyperLogLog {
 impl HyperLogLog {
     /// Create a new HyperLogLog(HLL) set with first `index_bits` used as register indexes
     fn new(index_bits: u8) -> Result<Self, String> {
-        if index_bits > 8 {
-            return Err(format!("Number of index bits must be less than 9 (was {})", index_bits));
+        if index_bits > 8 || index_bits < 1 {
+            return Err(
+                format!(
+                    "Number of index bits must be more than 0 and less than 9 (was {})", index_bits
+                )
+            );
         }
         let m: usize = 2_usize.checked_pow(index_bits as u32).unwrap();
         Ok(Self { register: vec![0; m as usize], index_bits })
