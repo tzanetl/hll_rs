@@ -1,7 +1,5 @@
 use std::hash::Hash;
 
-use hash32;
-
 struct HyperLogLog {
     register: Vec<u32>,
     index_bits: u8
@@ -30,15 +28,26 @@ impl HyperLogLog {
 
     /// Add a new hashable element to the set
     fn add<T: Hash>(mut self, value: &T) {
-        // let mut hasher = hash32::Murmur3Hasher::default();
-        // value.hash(&mut hasher);
-        // let hash: u32 = hasher.finish32();
         todo!()
     }
 
     /// Count the cardinality of the current set
     fn count(self) -> usize {
         todo!()
+    }
+}
+
+mod helpers {
+    use std::hash::Hash;
+
+    use hash32::Hasher;
+
+    /// Return a 32 bit hash of the `value`
+    pub fn hash_value_32<T: Hash>(value: &T) -> u32 {
+        let mut hasher = hash32::Murmur3Hasher::default();
+        value.hash(&mut hasher);
+        let hash: u32 = hasher.finish32();
+        return hash;
     }
 }
 
