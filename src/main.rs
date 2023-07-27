@@ -56,7 +56,7 @@ mod helpers {
     }
 
     /// Return `n` big endian (most significant) bits of a `value`
-    pub fn n_be_bits(value: u32, n: u32) -> u32 {
+    pub fn n_be_bits(value: &u32, n: &u32) -> u32 {
         let shift_amount = 32 - n;
         value >> shift_amount
     }
@@ -69,4 +69,21 @@ mod helpers {
 
 fn main() {
     println!("Hello, world!");
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_registers_from_bits() {
+        assert_eq!(helpers::registers_from_bits(&3), 8);
+    }
+
+    #[test]
+    fn test_n_be_bits() {
+        let number: u32 = 0b1010_0100_0000_0000_0000_0000_0000_0000;
+        let ret = helpers::n_be_bits(&number, &6);
+        assert_eq!(ret, 0b101001);
+    }
 }
