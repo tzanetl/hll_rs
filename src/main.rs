@@ -28,7 +28,7 @@ impl HyperLogLog {
 
     /// Count the number of registers based on used `index_bits`
     fn registers(&self) -> usize {
-        todo!()
+        helpers::registers_from_bits(&self.index_bits)
     }
 
     /// Add a new hashable element to the set
