@@ -6,7 +6,7 @@ struct HyperLogLog {
 }
 
 impl Default for HyperLogLog {
-    /// Creates a HyperLogLog with 4 bits as `index_bits`
+    /// Creates a HyperLogLog with 3 bits as `index_bits`
     fn default() -> Self {
         Self::new(3).unwrap()
     }
