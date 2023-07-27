@@ -22,8 +22,13 @@ impl HyperLogLog {
                 )
             );
         }
-        let m: usize = 2_usize.checked_pow(index_bits as u32).unwrap();
+        let m: usize = helpers::registers_from_bits(&index_bits);
         Ok(Self { register: vec![0; m as usize], index_bits })
+    }
+
+    /// Count the number of registers based on used `index_bits`
+    fn registers(&self) -> usize {
+        todo!()
     }
 
     /// Add a new hashable element to the set
@@ -55,6 +60,11 @@ mod helpers {
         let shift_amount = 32 - n;
         value >> shift_amount
     }
+
+    /// Calculate number of registers based on `index_bits`
+    pub fn registers_from_bits(index_bits: &u8) -> usize {
+        2_usize.checked_pow(*index_bits as u32).unwrap()
+    } 
 }
 
 fn main() {
