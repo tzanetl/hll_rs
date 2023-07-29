@@ -88,6 +88,15 @@ mod helpers {
     pub fn registers_from_bits(index_bits: &u8) -> usize {
         2_usize.checked_pow(*index_bits as u32).unwrap()
     }
+
+    /// Calculate indicator Z
+    pub fn indicator(register: &[u8]) -> f32 {
+        let val: f32 = register
+            .iter()
+            .map(|x| 1_f32 / 2_f32.powi(*x as i32))
+            .sum();
+        1_f32 / val
+    }
 }
 
 fn main() {
