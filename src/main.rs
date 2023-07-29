@@ -1,3 +1,4 @@
+use std::cmp;
 use std::hash::Hash;
 
 #[derive(Debug)]
@@ -33,8 +34,16 @@ impl HyperLogLog {
     }
 
     /// Add a new hashable element to the set
-    fn add<T: Hash>(mut self, value: &T) {
-        todo!()
+    fn add<T: Hash>(&mut self, value: &T) {
+        let hash = helpers::hash_value_32(value);
+        let register_index: usize =
+            helpers::n_be_bits(&hash, &(self.index_bits as u32))
+            .try_into()
+            .unwrap();
+        // Count trailing zeros in remaining bits
+        let non_index = helpers::n_le_bits(&hash, &(32 - self.index_bits as u32));
+        let zeros: u8 = non_index.trailing_zeros().try_into().unwrap();
+        self.register[register_index] = cmp::max(zeros, self.register[register_index]);
     }
 
     /// Count the cardinality of the current set
@@ -99,5 +108,13 @@ mod tests {
         let number: u32 = 0b1010_0100;
         let ret = helpers::n_le_bits(&number, &3);
         assert_eq!(ret, 0b100);
+    }
+
+    #[test]
+    fn test_hll_add() {
+        let mut hll = HyperLogLog::new(3).unwrap();
+        // Hash should equal 2766284370 = 10100100111000100010011001010010
+        hll.add(&"moros".to_string());
+        assert_eq!(hll.register, vec![0, 0, 0, 0, 0, 1, 0, 0])
     }
 }
