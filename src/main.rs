@@ -14,6 +14,13 @@ impl Default for HyperLogLog {
     }
 }
 
+/// Create a `HyperLogLog` with a number of index bits
+macro_rules! HLL {
+    ($index_bits:expr) => {
+        HyperLogLog::new($index_bits).unwrap()
+    };
+}
+
 impl HyperLogLog {
     /// Create a new HyperLogLog(HLL) set with first `index_bits` used as register indexes
     fn new(index_bits: u8) -> Result<Self, String> {
@@ -29,7 +36,7 @@ impl HyperLogLog {
     }
 
     /// Count the number of registers based on used `index_bits`
-    fn registers(&self) -> usize {
+    fn count_registers(&self) -> usize {
         helpers::registers_from_bits(&self.index_bits)
     }
 
@@ -116,5 +123,11 @@ mod tests {
         // Hash should equal 2766284370 = 10100100111000100010011001010010
         hll.add(&"moros".to_string());
         assert_eq!(hll.register, vec![0, 0, 0, 0, 0, 1, 0, 0])
+    }
+
+    #[test]
+    fn test_hll_macro() {
+        let hll: HyperLogLog = HLL!(3);
+        assert_eq!(hll.index_bits, 3);
     }
 }
