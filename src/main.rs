@@ -1,3 +1,8 @@
+//! Implementation of HyperLogLog
+//!
+//! [1]: https://algo.inria.fr/flajolet/Publications/FlFuGaMe07.pdf
+//! [2]: https://en.wikipedia.org/wiki/HyperLogLog
+
 use std::cmp;
 use std::hash::Hash;
 
@@ -53,8 +58,13 @@ impl HyperLogLog {
         self.register[register_index] = cmp::max(zeros, self.register[register_index]);
     }
 
+    /// Estimate `alpha`
+    fn alpha(&self) -> f32 {
+        todo!()
+    }
+
     /// Count the cardinality of the current set
-    fn count(self) -> usize {
+    fn count(&self) -> usize {
         todo!()
     }
 }
