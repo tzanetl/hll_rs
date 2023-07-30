@@ -100,12 +100,12 @@ mod helpers {
     }
 
     /// Calculate indicator Z
-    pub fn indicator(register: &[u8]) -> f32 {
-        let val: f32 = register
+    pub fn indicator(register: &[u8]) -> f64 {
+        let val: f64 = register
             .iter()
-            .map(|x| 1_f32 / 2_f32.powi(*x as i32))
+            .map(|x| 1_f64 / 2_f64.powi(*x as i32))
             .sum();
-        1_f32 / val
+        1_f64 / val
     }
 }
 
