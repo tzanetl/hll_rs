@@ -7,6 +7,7 @@ use std::cmp;
 use std::collections::HashSet;
 use std::hash::Hash;
 
+use clap::Parser;
 use indicatif::{ProgressIterator, ProgressFinish};
 use rand::Rng;
 
@@ -60,7 +61,7 @@ impl HyperLogLog {
     /// Estimate `alpha`
     fn alpha(&self) -> f64 {
         let m: f64 = self.register.len() as f64;
-
+        // Added ranges of values if register lenght happens to not be a power of 2
         if m < 32.0 {
             0.673
         } else if m < 64.0 {
@@ -121,10 +122,25 @@ mod helpers {
     }
 }
 
+#[derive(Parser)]
+struct Cli {
+    /// Number of index bits to use in HLL
+    #[arg(default_value_t = 6)]
+    index_bits: u8,
+    /// Exponent of 10 for numbers to randomize
+    #[arg(default_value_t = 8)]
+    numbers_exp: u32,
+    /// Exponent of 10 for maximum randomized number
+    #[arg(default_value_t = 12)]
+    max_value_exp: u32
+}
+
 fn main() {
-    let numbers: usize = 10_usize.pow(8);
+    let args = Cli::parse();
+
+    let numbers: usize = 10_usize.pow(args.numbers_exp);
     let min: usize = 0;
-    let max: usize = 10_usize.pow(15);
+    let max: usize = 10_usize.pow(args.max_value_exp);
 
     let mut generator = rand::thread_rng();
     let mut hll = HLL!(8);
