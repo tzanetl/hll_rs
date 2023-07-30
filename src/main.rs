@@ -13,9 +13,9 @@ struct HyperLogLog {
 }
 
 impl Default for HyperLogLog {
-    /// Creates a HyperLogLog with 3 bits as `index_bits`
+    /// Creates a HyperLogLog with 4 bits as `index_bits`
     fn default() -> Self {
-        Self::new(3).unwrap()
+        Self::new(4).unwrap()
     }
 }
 
@@ -29,7 +29,7 @@ macro_rules! HLL {
 impl HyperLogLog {
     /// Create a new HyperLogLog(HLL) set with first `index_bits` used as register indexes
     fn new(index_bits: u8) -> Result<Self, String> {
-        if !(1..=8).contains(&index_bits) {
+        if !(4..=16).contains(&index_bits) {
             return Err(
                 format!(
                     "Number of index bits must be more than 0 and less than 9 (was {})", index_bits
@@ -148,15 +148,15 @@ mod tests {
 
     #[test]
     fn test_hll_add() {
-        let mut hll = HyperLogLog::new(3).unwrap();
+        let mut hll = HyperLogLog::new(4).unwrap();
         // Hash should equal 2766284370 = 10100100111000100010011001010010
         hll.add(&"moros".to_string());
-        assert_eq!(hll.register, vec![0, 0, 0, 0, 0, 1, 0, 0])
+        assert_eq!(hll.register, vec![0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0])
     }
 
     #[test]
     fn test_hll_macro() {
-        let hll: HyperLogLog = HLL!(3);
-        assert_eq!(hll.index_bits, 3);
+        let hll: HyperLogLog = HLL!(6);
+        assert_eq!(hll.index_bits, 6);
     }
 }
