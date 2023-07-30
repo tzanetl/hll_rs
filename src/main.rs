@@ -40,11 +40,6 @@ impl HyperLogLog {
         Ok(Self { register: vec![0; m], index_bits })
     }
 
-    /// Count the number of registers based on used `index_bits`
-    fn count_registers(&self) -> usize {
-        helpers::registers_from_bits(&self.index_bits)
-    }
-
     /// Add a new hashable element to the set
     fn add<T: Hash>(&mut self, value: &T) {
         let hash = helpers::hash_value_32(value);
