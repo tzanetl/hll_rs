@@ -54,7 +54,7 @@ impl HyperLogLog {
             .unwrap();
         // Count trailing zeros in remaining bits
         let non_index = helpers::n_le_bits(&hash, &(32 - self.index_bits as u32));
-        let zeros: u8 = non_index.trailing_zeros().try_into().unwrap();
+        let zeros: u8 = non_index.trailing_zeros() as u8 + 1;
         self.register[register_index] = cmp::max(zeros, self.register[register_index]);
     }
 
@@ -151,7 +151,7 @@ mod tests {
         let mut hll = HyperLogLog::new(4).unwrap();
         // Hash should equal 2766284370 = 10100100111000100010011001010010
         hll.add(&"moros".to_string());
-        assert_eq!(hll.register, vec![0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0])
+        assert_eq!(hll.register, vec![0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0])
     }
 
     #[test]
