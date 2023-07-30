@@ -74,8 +74,11 @@ impl HyperLogLog {
     }
 
     /// Count the cardinality of the current set
-    fn count(&self) -> usize {
-        todo!()
+    fn count(&self) -> f64 {
+        let alpha: f64 = self.alpha();
+        let m_pow_2: f64 = self.register.len().pow(2) as f64;
+        let indicator: f64 = helpers::indicator(&self.register);
+        alpha * m_pow_2 * indicator
     }
 }
 
