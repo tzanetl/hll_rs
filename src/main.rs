@@ -62,11 +62,11 @@ impl HyperLogLog {
     fn alpha(&self) -> f64 {
         let m: f64 = self.register.len() as f64;
 
-        if m <= 16.0 {
+        if m < 32.0 {
             0.673
-        } else if m <= 32.0 {
+        } else if m < 64.0 {
             0.697
-        } else if m <= 64.0 {
+        } else if m < 128.0 {
             0.709
         } else {
             0.7213 / (1.0 + 1.079 / m)
