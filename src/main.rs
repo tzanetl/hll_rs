@@ -4,7 +4,11 @@
 //! [2]: https://en.wikipedia.org/wiki/HyperLogLog
 
 use std::cmp;
+use std::collections::HashSet;
 use std::hash::Hash;
+
+use indicatif::{ProgressIterator, ProgressFinish};
+use rand::Rng;
 
 #[derive(Debug)]
 struct HyperLogLog {
@@ -118,7 +122,30 @@ mod helpers {
 }
 
 fn main() {
-    println!("Hello, world!");
+    let numbers: usize = 10_usize.pow(8);
+    let min: usize = 0;
+    let max: usize = 10_usize.pow(15);
+
+    let mut generator = rand::thread_rng();
+    let mut hll = HLL!(8);
+    let mut test_set: HashSet<usize> = HashSet::new();
+
+    let bar_style = indicatif::ProgressStyle::with_template(
+        "{bar:50} {pos}/{len} ETA: {eta_precise} Elapsed: {elapsed_precise}"
+    ).unwrap();
+
+    for _ in (0..numbers).progress().with_style(bar_style).with_finish(ProgressFinish::AndLeave) {
+        let val = generator.gen_range(min..=max);
+        hll.add(&val);
+        test_set.insert(val);
+    }
+    let estimation = hll.count();
+    let correct = test_set.len();
+    let correct_f64 = correct as f64;
+    let error: f64 = (estimation - correct_f64).abs() / correct_f64;
+    println!("Cardinatity estimated with HashSet lenght\n> {:}", correct);
+    println!("Cardinatity estimated with HLL\n> {:.2}", estimation);
+    println!("Error\n> {:.2}%", error * 100.0);
 }
 
 #[cfg(test)]
